@@ -1,6 +1,4 @@
 clear all;
-clc
-close all
 % Algorithm implementing Recognition via Sparse Representation
 % or Algorithm 1 suggested in
 % "Feature selection in face recognition: A sparse representation

@@ -1,0 +1,89 @@
+
+% - OMP: this script is an implementation of the classical Orthogonal 
+% Matching Pursuit algorithm.
+
+
+close all
+clear
+tic
+l=8;
+c=8; 
+
+% (l,c) : dimension of the image
+% m is the number of Compressed Sensing measurements
+% p is the defining the order of the metric p=1 is l1 norm....
+% S is the support of the sparse signal
+S=5;
+% m is the number of measurement
+%m=20;
+A=5:20;
+D=zeros(size(A));D2=D;%flags of correct reconstructions for Monte Carlo
+% for t=1:5;% loop total number of experiments
+% for k=1:length(D);% loop of varying figure : either S or M
+k = 5
+m=A(k); %assumes S was fixed above
+  
+ % Unknown image u_true   
+ r2=randperm(l*c);r2=r2(1:S);rr2=r2(:);
+ u_true=zeros(l*c,1); u_true(r2)=u_true(r2)+rand(S,1);  
+ 
+
+%CS matrix phi :
+% phi=(kron(dftmtx(c).',dftmtx(l)));
+phi = (kron((fft(eye(c))).',fft(eye(l))));
+r = randperm(l*c);r=r(1:m);
+phi=phi(r,:); % if subsampled Fourier 2D matrix
+%phi=randn(m,l*c); % if Gaussian matrix
+
+b = phi * u_true(:); % observation vector
+%b_noise=.001*randn(size(u_true))+j*0.001*randn(size(u_true)); %if noise
+%b = b+b_noise; %vectorized image
+
+           
+[uestOMP,d2] =OMP(phi,b,u_true,S);
+           
+D2(k)=D2(k)+d2;
+%%
+% end
+% end;
+           D=D/t;Dp5=Dp5/t;D1=D1/t;Dco=Dco/t;Dsp=Dsp/t;
+           Dmod=Dmod/t;
+           Dmod3=Dmod3/t;
+           D2=D2/t;
+           figure(1)
+           hold off
+           plot(A,D,'g*--','LineWidth',2)
+           hold on
+           plot(A,Dp5,'c*--','LineWidth',2)
+           plot(A,D1,'k*--','LineWidth',2)
+           plot(A,D2,'m*--','LineWidth',2)
+           plot(A,Dmod3,'r*--','LineWidth',2)
+            plot(A,Dsp,'*--','LineWidth',2)
+             plot(A,Dco,'o--','LineWidth',2)
+           legend('IRLSL p=.01','IRLS p=.5','IRLS p=1','OMP','modified OMP','SP','CoSaMP',4)
+           grid
+           xlabel('Number of measurements M')
+           ylabel('Empirical probability of reconstruction at level 1e-3')
+           %title('N=64 S=5 \Phi : undersampled DFT')
+         
+% u_new=reshape(u_new,l,c);
+% u_true=reshape(u_true,l,c);
+% figure(1)
+% hold off
+% imshow(real(u_true),'InitialMagnification','fit'); colormap(jet); colorbar
+% title('original')
+% figure(2)
+% hold off
+% imshow(real(u_new),'InitialMagnification','fit'); colormap(jet); colorbar
+% title('reconstructed')
+% figure(3)
+% hold off
+% imshow(u_true-real(u_new),'InitialMagnification','fit'); colormap(jet); colorbar
+% title('error')
+% toc
+% % locations of the points in the TF
+% figure(4)
+% hold off
+% loc=zeros(l*c,1);loc(r)=ones(size(r));loc=reshape(loc,l,c);
+% imshow(loc,'InitialMagnification','fit')
+% title('(u,v) coverage')
