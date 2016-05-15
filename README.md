@@ -8,3 +8,4 @@ The directory contains many testing algorithm programs. But the final submission
 The paper, "A Comparison of Basis Pursuit, Orthogonal Matching Pursuit, and Subspace Matching Pursuit and their Performance Differences", is essentially a literature review and performance modeling of some Compressive Sensing Algorithms with major contribution from website http://nuit-blanche.blogspot.com/
 
 
+If you want to run the test program, make sure to download MATLAB CVX toolbox written by Stephen Boyed.
